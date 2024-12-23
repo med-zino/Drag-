@@ -1,58 +1,92 @@
-import React, { useState } from "react";
+import React from "react";
+import { AuthLayout } from '../components/AuthLayout.tsx';
+import { MultiStepAuthConfig } from '../types';
+import { MultiStepAuthForm } from "../components/MultiStepAuthForm.tsx";
 
-const SignupPage: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
-    console.log("Signup data:", { email, password });
-    // Add signup logic (e.g., API call)
+export const SignupPage = () => {
+    const handleSubmit = async (data: Record<string, string>) => {
+      console.log('Final form data:', data);
+      // Submit to your API
+    };
+  
+    const verifyEmail = async (data: Record<string, string>) => {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const emailExists = false; 
+      return !emailExists;
+    };
+  
+    const signupConfig: MultiStepAuthConfig = {
+      steps: [
+        {
+          title: "Sign Up",
+          subtitle: "Let’s validate your email first",
+          inputs: [
+            {
+              name: "email",
+              label: "Email",
+              type: "email",
+              required: true,
+              validation: {
+                pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$",
+                message: "Please enter a valid email"
+              }
+            }
+          ],
+          validationFn: verifyEmail
+        },
+        {
+          title: "Create your account",
+          subtitle: "Fill in your personal details",
+          inputs: [
+            {
+              name: "fullName",
+              label: "Full Name",
+              type: "text",
+              required: true
+            },
+            {
+              name: "password",
+              label: "Password",
+              type: "password",
+              required: true,
+              validation: {
+                minLength: 8,
+                message: "Password must be at least 8 characters"
+              }
+            }
+          ]
+        },
+        {
+          title: "Company Information",
+          subtitle: "Tell us about your organization",
+          inputs: [
+            {
+              name: "companyName",
+              label: "Company Name",
+              type: "text",
+              required: true
+            },
+            {
+              name: "companySize",
+              label: "Company Size",
+              type: "text",
+              required: true
+            },
+            {
+              name: "industry",
+              label: "Industry",
+              type: "text",
+              required: true
+            }
+          ]
+        }
+      ],
+      onSubmit: handleSubmit
+    };
+  
+    return (
+      <AuthLayout>
+        <MultiStepAuthForm {...signupConfig} />
+      </AuthLayout>
+    );
   };
-
-  return (
-    <div style={{ padding: "1rem" }}>
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="confirm-password">Confirm Password:</label>
-          <input
-            id="confirm-password"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Sign Up</button>
-      </form>
-    </div>
-  );
-};
-
-export default SignupPage;
