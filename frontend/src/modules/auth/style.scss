@@ -3,6 +3,13 @@
     line-height: 20px;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; 
+}
+
 .auth-form-card {
     width: 87%;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);

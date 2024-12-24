@@ -1,17 +1,19 @@
 // types.ts
 export interface FormInput {
-    name: string;
-    label: string;
-    type: 'text' | 'email' | 'password' | 'number' | 'tel';
-    required?: boolean;
-    placeholder?: string;
-    validation?: {
-      minLength?: number;
-      maxLength?: number;
-      pattern?: string;
-      message?: string;
-    };
-  }
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'password' | 'number' | 'tel' | 'select' | 'checkbox';
+  required?: boolean;
+  placeholder?: string;
+  validation?: {
+    minLength?: number;
+    maxLength?: number;
+    pattern?: string;
+    message?: string;
+  };
+  options?: { value: string; label: string }[]; // For select inputs
+}
+
   
   export interface FormAction {
     label: string;
@@ -32,6 +34,7 @@ export interface FormInput {
   export interface AuthStep {
     title: string;
     subtitle?: string;
+    submitText?: string;
     inputs: FormInput[];
     actions?: FormAction[];
     validationFn?: (data: Record<string, string>) => Promise<boolean>;

@@ -7,7 +7,10 @@ import {
   Card,
   CardContent,
   Typography,
-  CircularProgress
+  CircularProgress,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { FormConfig } from "../types";
 import "../style.scss";
@@ -22,6 +25,7 @@ export const AuthForm = ({
 }: FormConfig) => {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,9 +59,48 @@ export const AuthForm = ({
             {subtitle}
           </Typography>
         )}
+      <Box component="form" onSubmit={handleSubmit}>
+        {inputs.map((input) => {
+          if (input.type === "select") {
+            return (
+              <TextField
+                key={input.name}
+                fullWidth
+                name={input.name}
+                label={input.label}
+                select
+                margin="normal"
+                required={input.required}
+                value={formData[input.name] || ""}
+                onChange={handleChange}
+              >
+                {input.options?.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            );
+          }
 
-        <Box component="form" onSubmit={handleSubmit}>
-          {inputs.map((input) => (
+          if (input.type === "checkbox") {
+            return (
+              <FormControlLabel
+                key={input.name}
+                control={
+                  <Checkbox
+                    name={input.name}
+                    required={input.required}
+                    checked={Boolean(formData[input.name])}
+                    onChange={handleChange}
+                  />
+                }
+                label={input.label}
+              />
+            );
+          }
+
+          return (
             <TextField
               key={input.name}
               fullWidth
@@ -70,43 +113,44 @@ export const AuthForm = ({
               value={formData[input.name] || ""}
               onChange={handleChange}
             />
-          ))}
+          );
+        })}
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            className="auth-form-submit"
-            disabled={loading}
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          className="auth-form-submit"
+          disabled={loading}
+        >
+          {loading ? <CircularProgress size={24} color="inherit" /> : submitText}
+        </Button>
+
+        {actions.length > 0 && (
+          <Box
+            className={`auth-form-actions ${
+              actions.length === 1 ? "single" : "multiple"
+            }`}
           >
-            {loading ? <CircularProgress size={24} color="inherit" /> : submitText}
-          </Button>
-
-          {actions.length > 0 && (
-            <Box
-              className={`auth-form-actions ${
-                actions.length === 1 ? "single" : "multiple"
-              }`}
-            >
-              {actions.map((action, index) =>
-                action.type === "link" ? (
-                  <Link
-                    key={index}
-                    href={action.href}
-                    underline="none"
-                    onClick={action.onClick}
-                  >
-                    {action.label}
-                  </Link>
-                ) : (
-                  <Button key={index} variant="text" onClick={action.onClick}>
-                    {action.label}
-                  </Button>
-                )
-              )}
-            </Box>
-          )}
-        </Box>
+            {actions.map((action, index) =>
+              action.type === "link" ? (
+                <Link
+                  key={index}
+                  href={action.href}
+                  underline="none"
+                  onClick={action.onClick}
+                >
+                  {action.label}
+                </Link>
+              ) : (
+                <Button key={index} variant="text" onClick={action.onClick}>
+                  {action.label}
+                </Button>
+              )
+            )}
+          </Box>
+        )}
+      </Box>
       </CardContent>
     </Card>
   );
