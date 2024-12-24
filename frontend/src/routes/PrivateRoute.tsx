@@ -13,7 +13,6 @@ interface PrivateRouteProps {
  */
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ redirectTo = "/login" }) => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-
   return isAuthenticated ? <Outlet /> : <Navigate to={redirectTo} />;
 };
 

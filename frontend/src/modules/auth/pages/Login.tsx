@@ -1,11 +1,20 @@
 import { AuthLayout } from '../components/AuthLayout.tsx';
 import { AuthForm } from '../components/AuthForm.tsx';
 import { FormConfig } from '../types';
-import React from 'react';
+import React, { use } from 'react';
+import useLogin from '../../../hooks/useLogin.ts';
+
+interface Credentials {
+  email: string;
+  password: string;
+}
 
 export const Login = () => {
-    const handleSubmit = (data: Record<string, string>) => {
-        console.log('Form submitted:', data);
+
+    const { login, loading, error } = useLogin();
+
+    const handleSubmit = (data: Credentials) => {
+        login(data);
       };
     
       const formConfig: FormConfig = {
@@ -42,8 +51,7 @@ export const Login = () => {
           }
         ],
         onSubmit: handleSubmit
-      };
-    
+      };    
       return (
         <AuthLayout>
           <AuthForm {...formConfig} />
